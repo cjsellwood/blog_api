@@ -8,6 +8,7 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
+const cors = require("cors");
 
 // Routes
 const postsRouter = require("./routes/posts");
@@ -38,7 +39,9 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(methodOverride("_method"));
+app.use(cors());
 
 // Custom Routes
 app.use("/posts", postsRouter);

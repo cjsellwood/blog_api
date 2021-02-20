@@ -23,7 +23,7 @@ const seedComments = async () => {
     const comment = new Comment({
       text:
         "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Inventore quisquam praesentium suscipit ullam voluptatum ea!",
-      date: Date.now() + i * 10000000,
+      date: Date.now() + i * 100000000,
       username: `User ${i}`,
     });
     await comment.save();
@@ -36,11 +36,11 @@ const seedPosts = async () => {
 
   for (let i = 0; i < 20; i++) {
     const post = new Post({
-      title: "Title",
+      title: `Title ${i}`,
       text:
         "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Inventore quisquam praesentium suscipit ullam voluptatum ea! Rerum facere in omnis earum. Modi quas voluptatibus provident laudantium deserunt adipisci quidem mollitia cumque! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Inventore quisquam praesentium suscipit ullam voluptatum ea! Rerum facere in omnis earum. Modi quas voluptatibus provident laudantium deserunt adipisci quidem mollitia cumque! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Inventore quisquam praesentium suscipit ullam voluptatum ea! Rerum facere in omnis earum. Modi quas voluptatibus provident laudantium deserunt adipisci quidem mollitia cumque! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Inventore quisquam praesentium suscipit ullam voluptatum ea! Rerum facere in omnis earum. Modi quas voluptatibus provident laudantium deserunt adipisci quidem mollitia cumque! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Inventore quisquam praesentium suscipit ullam voluptatum ea! Rerum facere in omnis earum. Modi quas voluptatibus provident laudantium deserunt adipisci quidem mollitia cumque!",
       published: Math.random() > 0.5,
-      date: Date.now() + i * 10000000,
+      date: Date.now() + i * 100000000,
       comments: comments.slice(i * 5, (i + 1) * 5),
     });
     await post.save();
