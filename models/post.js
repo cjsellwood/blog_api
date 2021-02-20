@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Comment = require("./comment")
 const Schema = mongoose.Schema;
 
 const postSchema = Schema({
@@ -22,7 +23,7 @@ const postSchema = Schema({
   comments: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Comment"
+      ref: Comment
     }
   ]
 });

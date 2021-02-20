@@ -9,10 +9,13 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
 
+// Routes
+const postsRouter = require("./routes/posts");
+
 // Use local database in development mode
 let dbURL = process.env.DB_URL;
 if (process.env.NODE_ENV !== "production") {
-  dbURL = "mongodb://localhost/members_only";
+  dbURL = "mongodb://localhost/blog";
 }
 
 // Connect to database
@@ -37,6 +40,9 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
+// Custom Routes
+app.use("/posts", postsRouter);
+
 app.get("/", (req, res) => {
   res.send("HOME");
 });
@@ -55,7 +61,6 @@ app.use((err, req, res, next) => {
   }
   res.status(err.statusCode).render("error", { err });
 });
-
 
 const port = process.env.PORT || 3000;
 
