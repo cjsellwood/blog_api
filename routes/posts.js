@@ -24,4 +24,7 @@ router.delete("/:id", catchAsync(posts.deletePost));
 // Get individual post
 router.get("/:id", catchAsync(posts.getPost));
 
+// Edit post
+router.patch("/:id", catchAsync(posts.editPost));
+
 module.exports = router;

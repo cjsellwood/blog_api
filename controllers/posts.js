@@ -67,8 +67,20 @@ module.exports.addPost = async (req, res, next) => {
 };
 
 // Delete one post
-module.exports.deletePost = async(req, res, next) => {
+module.exports.deletePost = async (req, res, next) => {
   console.log(req.body);
   await Post.findByIdAndDelete(req.body.id);
-  res.json({status: "Success"})
-}
+  res.json({ status: "Success" });
+};
+
+// Edit post
+module.exports.editPost = async (req, res, next) => {
+  console.log(req.body);
+  const { id, title, text, published } = req.body;
+  const editedPost = await Post.findByIdAndUpdate(
+    id,
+    { title, text, published },
+    { new: true }
+  ).populate("comments");
+  res.json({ status: "Success", editedPost });
+};
