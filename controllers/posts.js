@@ -3,8 +3,15 @@ const Comment = require("../models/comment");
 
 // Get all published posts
 module.exports.getPosts = async (req, res, next) => {
-  console.log("Responding with all posts");
+  console.log("Responding with published posts");
   const posts = await Post.find({ published: true }).populate("comments");
+  res.json(posts);
+};
+
+// Get all posts
+module.exports.getAllPosts = async (req, res, next) => {
+  console.log("Responding with all posts");
+  const posts = await Post.find({}).populate("comments");
   res.json(posts);
 };
 
@@ -26,6 +33,19 @@ module.exports.addComment = async (req, res, next) => {
     comments: newComments,
   });
   res.json({ status: "Success" });
+};
+
+// Change publish status
+module.exports.published = async (req, res, next) => {
+  console.log(req.body);
+  const { id, published } = req.body;
+  const post = await Post.findByIdAndUpdate(
+    id,
+    { published: !published },
+    { new: true }
+  ).populate("comments");
+
+  return res.json({ status: "Success", post });
 };
 
 // Get one post
