@@ -32,7 +32,7 @@ module.exports.addComment = async (req, res, next) => {
   await Post.findByIdAndUpdate(req.params.id, {
     comments: newComments,
   });
-  res.json({ status: "Success" });
+  res.json({ status: "Success", comment });
 };
 
 // Change publish status
@@ -83,4 +83,14 @@ module.exports.editPost = async (req, res, next) => {
     { new: true }
   ).populate("comments");
   res.json({ status: "Success", editedPost });
+};
+
+// Delete comment
+module.exports.deleteComment = async (req, res, next) => {
+  const { id, commentId } = req.params;
+  await Comment.findByIdAndDelete(commentId);
+  await Post.findByIdAndUpdate(id, { $pull: { comments: { _id: commentId } } });
+
+  console.log(id, commentId);
+  res.json({ status: "Success" });
 };

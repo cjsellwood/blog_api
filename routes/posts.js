@@ -15,6 +15,9 @@ router.get("/all", catchAsync(posts.getAllPosts));
 // Post new comment
 router.post("/:id/comment", catchAsync(posts.addComment));
 
+// Delete comment
+router.delete("/:id/comment/:commentId", catchAsync(posts.deleteComment));
+
 // Change published status
 router.patch("/:id/publish", catchAsync(posts.published));
 
