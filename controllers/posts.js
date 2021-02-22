@@ -53,3 +53,22 @@ module.exports.getPost = async (req, res, next) => {
   const post = await Post.findById(req.params.id).populate("comments");
   res.json(post);
 };
+
+// Add one post
+module.exports.addPost = async (req, res, next) => {
+  console.log(req.body);
+  const post = new Post({
+    ...req.body,
+    date: Date.now(),
+    comments: [],
+  });
+  const newPost = await post.save();
+  res.json({ status: "Success", newPost });
+};
+
+// Delete one post
+module.exports.deletePost = async(req, res, next) => {
+  console.log(req.body);
+  await Post.findByIdAndDelete(req.body.id);
+  res.json({status: "Success"})
+}
