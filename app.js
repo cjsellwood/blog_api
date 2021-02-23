@@ -2,6 +2,9 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
+//Temp
+const User = require("./models/user");
+
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
@@ -9,6 +12,27 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
 const cors = require("cors");
+const bcrypt = require("bcrypt");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const jwt = require("jsonwebtoken");
+
+
+const JwtStrategy = require("passport-jwt").Strategy;
+const ExtractJwt = require("passport-jwt").ExtractJwt;
+const opts = {};
+opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+// Store in env
+opts.secretOrKey = "SECRET";
+
+const jwtVerify = new JwtStrategy(opts, (jwtPayload, done) => {
+  if (jwtPayload.username === "callum") {
+    return done(null, true);
+  }
+  return done(null, false);
+});
+
+passport.use(jwtVerify);
 
 // Routes
 const postsRouter = require("./routes/posts");
@@ -46,9 +70,7 @@ app.use(cors());
 // Custom Routes
 app.use("/posts", postsRouter);
 
-app.get("/", (req, res) => {
-  res.send("HOME");
-});
+
 
 // Handle Page not found
 app.use("*", (req, res, next) => {

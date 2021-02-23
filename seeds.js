@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Post = require("./models/post");
 const Comment = require("./models/comment");
+const User = require("./models/user");
+const bcrypt = require("bcrypt");
 
 const dbURL = "mongodb://localhost/blog";
 
@@ -15,6 +17,16 @@ db.on("error", console.error.bind(console, "connection error"));
 db.once("open", () => {
   console.log("Connected to mongo");
 });
+
+const seedUsers = async () => {
+  await User.deleteMany({});
+  const password = await bcrypt.hash("callum", 12)
+  const user = new User({
+    username: "callum",
+    password,
+  });
+  await user.save();
+};
 
 const seedComments = async () => {
   await Comment.deleteMany({});
@@ -48,9 +60,10 @@ const seedPosts = async () => {
 };
 
 const runAll = async () => {
+  await seedUsers();
   await seedComments();
   await seedPosts();
   mongoose.disconnect();
-}
+};
 
 runAll();

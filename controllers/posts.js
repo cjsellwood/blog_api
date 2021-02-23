@@ -1,5 +1,35 @@
 const Post = require("../models/post");
 const Comment = require("../models/comment");
+const User = require("../models/user")
+const bcrypt= require("bcrypt")
+const jwt = require("jsonwebtoken")
+
+// Login user
+module.exports.login = async (req, res, next) => {
+  console.log("Login", req.body);
+  let { username, password } = req.body;
+
+  // Change to database after
+  const user = await User.findOne({ username });
+  console.log(user);
+
+  // Check password with bcrypt
+  const isValid = await bcrypt.compare(password, user.password);
+  if (isValid) {
+    // Expires in 24 hours
+    const optsJwt = {};
+    optsJwt.expiresIn = 60 * 60 * 24;
+    // Change to .env later
+    const secret = "SECRET";
+    const token = jwt.sign({ username }, secret, optsJwt);
+    return res.status(200).json({
+      message: "Auth Passed",
+      token,
+      expires: optsJwt.expiresIn,
+    });
+  }
+  return res.status(401).json({ message: "Auth Failed" });
+};
 
 // Get all published posts
 module.exports.getPosts = async (req, res, next) => {
