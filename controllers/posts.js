@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 const Post = require("../models/post");
 const Comment = require("../models/comment");
 const User = require("../models/user")
@@ -6,12 +10,10 @@ const jwt = require("jsonwebtoken")
 
 // Login user
 module.exports.login = async (req, res, next) => {
-  console.log("Login", req.body);
   let { username, password } = req.body;
 
   // Change to database after
   const user = await User.findOne({ username });
-  console.log(user);
 
   // Check password with bcrypt
   const isValid = await bcrypt.compare(password, user.password);
@@ -20,7 +22,7 @@ module.exports.login = async (req, res, next) => {
     const optsJwt = {};
     optsJwt.expiresIn = 60 * 60 * 24;
     // Change to .env later
-    const secret = "SECRET";
+    const secret = process.env.SECRET;
     const token = jwt.sign({ username }, secret, optsJwt);
     return res.status(200).json({
       message: "Auth Passed",
@@ -33,21 +35,18 @@ module.exports.login = async (req, res, next) => {
 
 // Get all published posts
 module.exports.getPosts = async (req, res, next) => {
-  console.log("Responding with published posts");
   const posts = await Post.find({ published: true }).populate("comments");
   res.json(posts);
 };
 
 // Get all posts
 module.exports.getAllPosts = async (req, res, next) => {
-  console.log("Responding with all posts");
   const posts = await Post.find({}).populate("comments");
   res.json(posts);
 };
 
 // Post new comment
 module.exports.addComment = async (req, res, next) => {
-  console.log("Save comment");
   // Create new comment and save
   const comment = new Comment({
     ...req.body,
@@ -86,7 +85,6 @@ module.exports.getPost = async (req, res, next) => {
 
 // Add one post
 module.exports.addPost = async (req, res, next) => {
-  console.log(req.body);
   const post = new Post({
     ...req.body,
     date: Date.now(),
@@ -98,14 +96,12 @@ module.exports.addPost = async (req, res, next) => {
 
 // Delete one post
 module.exports.deletePost = async (req, res, next) => {
-  console.log(req.body);
   await Post.findByIdAndDelete(req.body.id);
   res.json({ status: "Success" });
 };
 
 // Edit post
 module.exports.editPost = async (req, res, next) => {
-  console.log(req.body);
   const { id, title, text, published } = req.body;
   const editedPost = await Post.findByIdAndUpdate(
     id,
@@ -121,6 +117,5 @@ module.exports.deleteComment = async (req, res, next) => {
   await Comment.findByIdAndDelete(commentId);
   await Post.findByIdAndUpdate(id, { $pull: { comments: { _id: commentId } } });
 
-  console.log(id, commentId);
   res.json({ status: "Success" });
 };

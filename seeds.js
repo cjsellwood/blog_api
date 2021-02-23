@@ -1,11 +1,15 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 const mongoose = require("mongoose");
 const Post = require("./models/post");
 const Comment = require("./models/comment");
 const User = require("./models/user");
 const bcrypt = require("bcrypt");
 
-const dbURL = "mongodb://localhost/blog";
-
+// const dbURL = "mongodb://localhost/blog";
+const dbURL = "mongodb+srv://cjsellwood:2Ux2dnnO44k7iebr@cluster0.gv6zh.mongodb.net/blog?retryWrites=true&w=majority"
 // Connect to database
 mongoose.connect(dbURL, {
   useNewUrlParser: true,
@@ -20,7 +24,7 @@ db.once("open", () => {
 
 const seedUsers = async () => {
   await User.deleteMany({});
-  const password = await bcrypt.hash("callum", 12)
+  const password = await bcrypt.hash(process.env.PASSWORD, 12)
   const user = new User({
     username: "callum",
     password,

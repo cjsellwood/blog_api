@@ -16,16 +16,17 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const jwt = require("jsonwebtoken");
-
-
+const compression = require("compression");
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize")
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-// Store in env
-opts.secretOrKey = "SECRET";
+opts.secretOrKey = process.env.SECRET;
 
 const jwtVerify = new JwtStrategy(opts, (jwtPayload, done) => {
+  console.log("payload", jwtPayload);
   if (jwtPayload.username === "callum") {
     return done(null, true);
   }
@@ -66,11 +67,27 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride("_method"));
 app.use(cors());
+app.use(compression());
+app.use(helmet());
+
+// Sanitize mongo queries from user forms
+app.use(
+  mongoSanitize({
+    replaceWith: "_",
+  })
+);
+app.use(compression());
+app.use(helmet());
+
+// Sanitize mongo queries from user forms
+app.use(
+  mongoSanitize({
+    replaceWith: "_",
+  })
+);
 
 // Custom Routes
 app.use("/posts", postsRouter);
-
-
 
 // Handle Page not found
 app.use("*", (req, res, next) => {
