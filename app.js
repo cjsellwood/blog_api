@@ -33,9 +33,9 @@ const postsRouter = require("./routes/posts");
 
 // Use local database in development mode
 let dbURL = process.env.DB_URL;
-// if (process.env.NODE_ENV !== "production") {
-//   dbURL = "mongodb://localhost/blog";
-// }
+if (process.env.NODE_ENV !== "production") {
+  dbURL = "mongodb://localhost/blog";
+}
 
 // Connect to database
 mongoose.connect(dbURL, {
